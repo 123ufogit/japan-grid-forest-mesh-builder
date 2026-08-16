@@ -1,0 +1,1336 @@
+{
+  "type": "FeatureCollection",
+  "name": "ishikawa_forest_mesh_list",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07DD1",
+        "resource_name": "fr_mesh20m_07DD1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/029597bb-a8dd-4244-b2b5-2161c94c2da5/download/fr_mesh20m_07dd1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7119, 37.7564, 136.9397, 37.8923]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.71270706648838,
+              37.75644771394081
+            ],
+            [
+              136.93968441298134,
+              37.7571034204485
+            ],
+            [
+              136.93927008026245,
+              37.892259331533694
+            ],
+            [
+              136.7118784360884,
+              37.891600444326215
+            ],
+            [
+              136.71270706648838,
+              37.75644771394081
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07ED1",
+        "resource_name": "fr_mesh20m_07ED1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/7cbe183c-471a-4452-9262-a3985a56a038/download/fr_mesh20m_07ed1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7135, 37.4861, 136.9405, 37.6219]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.71434780533664,
+              37.48613288866573
+            ],
+            [
+              136.94050481688402,
+              37.48678226781994
+            ],
+            [
+              136.9400959853556,
+              37.621944397957364
+            ],
+            [
+              136.71353017657353,
+              37.62129186076836
+            ],
+            [
+              136.71434780533664,
+              37.48613288866573
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07ED2",
+        "resource_name": "fr_mesh20m_07ED2_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/2e9db6b3-fe97-4517-9d72-dd69d2263127/download/fr_mesh20m_07ed2_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.9401, 37.4868, 137.1667, 37.6222]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.94050481688402,
+              37.48678226781994
+            ],
+            [
+              137.166666666667,
+              37.48699873231339
+            ],
+            [
+              137.166666666667,
+              37.62216191516444
+            ],
+            [
+              136.9400959853556,
+              37.621944397957364
+            ],
+            [
+              136.94050481688402,
+              37.48678226781994
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07ED3",
+        "resource_name": "fr_mesh20m_07ED3_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/8c965c1d-6b18-444b-81b9-79c0088b4705/download/fr_mesh20m_07ed3_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7143, 37.351, 136.9409, 37.4868]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.71515999135468,
+              37.35097080155803
+            ],
+            [
+              136.94091092685733,
+              37.351617033865054
+            ],
+            [
+              136.94050481688402,
+              37.48678226781994
+            ],
+            [
+              136.71434780533664,
+              37.48613288866573
+            ],
+            [
+              136.71515999135468,
+              37.35097080155803
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07ED4",
+        "resource_name": "fr_mesh20m_07ED4_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/e28c25f6-0fa3-459a-8ca5-72d5bc9baceb/download/fr_mesh20m_07ed4_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.9405, 37.3516, 137.1667, 37.487]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.94091092685733,
+              37.351617033865054
+            ],
+            [
+              137.166666666667,
+              37.351832449374406
+            ],
+            [
+              137.166666666667,
+              37.48699873231339
+            ],
+            [
+              136.94050481688402,
+              37.48678226781994
+            ],
+            [
+              136.94091092685733,
+              37.351617033865054
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07EE1",
+        "resource_name": "fr_mesh20m_07EE1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/07fd747e-f0f6-48ef-a5f5-54c235b09bfa/download/fr_mesh20m_07ee1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[137.1667, 37.4868, 137.3932, 37.6222]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              137.166666666667,
+              37.48699873231339
+            ],
+            [
+              137.39282851644998,
+              37.48678226781994
+            ],
+            [
+              137.39323734797838,
+              37.621944397957364
+            ],
+            [
+              137.166666666667,
+              37.62216191516444
+            ],
+            [
+              137.166666666667,
+              37.48699873231339
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07EE3",
+        "resource_name": "fr_mesh20m_07EE3_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/1fb79e10-0782-4a4c-a0b6-472f418f0d16/download/fr_mesh20m_07ee3_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[137.1667, 37.3516, 137.3928, 37.487]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              137.166666666667,
+              37.351832449374406
+            ],
+            [
+              137.39242240647667,
+              37.351617033865054
+            ],
+            [
+              137.39282851644998,
+              37.48678226781994
+            ],
+            [
+              137.166666666667,
+              37.48699873231339
+            ],
+            [
+              137.166666666667,
+              37.351832449374406
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07FC2",
+        "resource_name": "fr_mesh20m_07FC2_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/83cbcb98-6512-412c-ba4f-d0db110164fe/download/fr_mesh20m_07fc2_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.4894, 37.2147, 136.716, 37.351]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.49062875207198,
+              37.21473382290465
+            ],
+            [
+              136.71596677279393,
+              37.21580560343855
+            ],
+            [
+              136.71515999135468,
+              37.35097080155803
+            ],
+            [
+              136.4894186638253,
+              37.34989379511364
+            ],
+            [
+              136.49062875207198,
+              37.21473382290465
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07FC4",
+        "resource_name": "fr_mesh20m_07FC4_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/567c1427-810d-4341-961e-60d5017aeaa8/download/fr_mesh20m_07fc4_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.4906, 37.0796, 136.7168, 37.2158]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.49183079098145,
+              37.079570725418314
+            ],
+            [
+              136.71676818741506,
+              37.08063729836871
+            ],
+            [
+              136.71596677279393,
+              37.21580560343855
+            ],
+            [
+              136.49062875207198,
+              37.21473382290465
+            ],
+            [
+              136.49183079098145,
+              37.079570725418314
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07FD1",
+        "resource_name": "fr_mesh20m_07FD1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/6c600da6-81e2-4eab-b104-676a317055b0/download/fr_mesh20m_07fd1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7152, 37.2158, 136.9413, 37.3516]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.71596677279393,
+              37.21580560343855
+            ],
+            [
+              136.94131433436095,
+              37.216448699990764
+            ],
+            [
+              136.94091092685733,
+              37.351617033865054
+            ],
+            [
+              136.71515999135468,
+              37.35097080155803
+            ],
+            [
+              136.71596677279393,
+              37.21580560343855
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07FD2",
+        "resource_name": "fr_mesh20m_07FD2_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/7105405e-8c32-4a23-8cfc-12328ac9b0d8/download/fr_mesh20m_07fd2_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.9409, 37.2164, 137.1667, 37.3518]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.94131433436095,
+              37.216448699990764
+            ],
+            [
+              137.166666666667,
+              37.216663070213734
+            ],
+            [
+              137.166666666667,
+              37.351832449374406
+            ],
+            [
+              136.94091092685733,
+              37.351617033865054
+            ],
+            [
+              136.94131433436095,
+              37.216448699990764
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07FD3",
+        "resource_name": "fr_mesh20m_07FD3_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/7a221894-7995-4b03-9d89-1a1d268d49d1/download/fr_mesh20m_07fd3_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.716, 37.0806, 136.9417, 37.2164]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.71676818741506,
+              37.08063729836871
+            ],
+            [
+              136.94171505827754,
+              37.081277270164065
+            ],
+            [
+              136.94131433436095,
+              37.216448699990764
+            ],
+            [
+              136.71596677279393,
+              37.21580560343855
+            ],
+            [
+              136.71676818741506,
+              37.08063729836871
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07FD4",
+        "resource_name": "fr_mesh20m_07FD4_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/e75ebf85-7dda-4f31-be79-5744f4b51cf5/download/fr_mesh20m_07fd4_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.9413, 37.0813, 137.1667, 37.2167]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.94171505827754,
+              37.081277270164065
+            ],
+            [
+              137.166666666667,
+              37.08149059876697
+            ],
+            [
+              137.166666666667,
+              37.216663070213734
+            ],
+            [
+              136.94131433436095,
+              37.216448699990764
+            ],
+            [
+              136.94171505827754,
+              37.081277270164065
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07FE1",
+        "resource_name": "fr_mesh20m_07FE1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/0b740551-4bcc-41ed-9654-beef781460c4/download/fr_mesh20m_07fe1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[137.1667, 37.2164, 137.3924, 37.3518]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              137.166666666667,
+              37.216663070213734
+            ],
+            [
+              137.39201899897304,
+              37.216448699990764
+            ],
+            [
+              137.39242240647667,
+              37.351617033865054
+            ],
+            [
+              137.166666666667,
+              37.351832449374406
+            ],
+            [
+              137.166666666667,
+              37.216663070213734
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07GD1",
+        "resource_name": "fr_mesh20m_07GD1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/d2bffba6-3844-4a37-9f75-dc4cc1b319e7/download/fr_mesh20m_07gd1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7168, 36.9455, 136.9421, 37.0813]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.71756427257841,
+              36.94546589047805
+            ],
+            [
+              136.9421131172895,
+              36.94610274842107
+            ],
+            [
+              136.94171505827754,
+              37.081277270164065
+            ],
+            [
+              136.71676818741506,
+              37.08063729836871
+            ],
+            [
+              136.71756427257841,
+              36.94546589047805
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07GD2",
+        "resource_name": "fr_mesh20m_07GD2_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/e844d373-e050-4e08-b52e-f222042a77b2/download/fr_mesh20m_07gd2_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.9417, 36.9461, 137.1667, 37.0815]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.9421131172895,
+              36.94610274842107
+            ],
+            [
+              137.166666666667,
+              36.94631503903902
+            ],
+            [
+              137.166666666667,
+              37.08149059876697
+            ],
+            [
+              136.94171505827754,
+              37.081277270164065
+            ],
+            [
+              136.9421131172895,
+              36.94610274842107
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07GD3",
+        "resource_name": "fr_mesh20m_07GD3_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/923f5be9-8d6f-4904-b0f6-5b0907b292f7/download/fr_mesh20m_07gd3_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7176, 36.8103, 136.9425, 36.9461]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.7183550652488,
+              36.8102913839641
+            ],
+            [
+              136.94250852988128,
+              36.81092513886677
+            ],
+            [
+              136.9421131172895,
+              36.94610274842107
+            ],
+            [
+              136.71756427257841,
+              36.94546589047805
+            ],
+            [
+              136.7183550652488,
+              36.8102913839641
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07GD4",
+        "resource_name": "fr_mesh20m_07GD4_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/40c6f143-bd67-471b-98f0-f3bac8757999/download/fr_mesh20m_07gd4_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.9421, 36.8109, 137.1667, 36.9463]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.94250852988128,
+              36.81092513886677
+            ],
+            [
+              137.166666666667,
+              36.81113639510404
+            ],
+            [
+              137.166666666667,
+              36.94631503903902
+            ],
+            [
+              136.9421131172895,
+              36.94610274842107
+            ],
+            [
+              136.94250852988128,
+              36.81092513886677
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07HC2",
+        "resource_name": "fr_mesh20m_07HC2_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/9b6d064a-af18-4ed5-a8ab-b30845374556/download/fr_mesh20m_07hc2_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.4942, 36.6741, 136.7191, 36.8103]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.49538916902233,
+              36.67406272448
+            ],
+            [
+              136.71914060200038,
+              36.675113783092364
+            ],
+            [
+              136.7183550652488,
+              36.8102913839641
+            ],
+            [
+              136.4942109443132,
+              36.80923517182103
+            ],
+            [
+              136.49538916902233,
+              36.67406272448
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07HC4",
+        "resource_name": "fr_mesh20m_07HC4_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/b8084952-c450-440d-894f-50ee960d89f8/download/fr_mesh20m_07hc4_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.4954, 36.5389, 136.7199, 36.6751]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.49655956498262,
+              36.5388871694014
+            ],
+            [
+              136.71992091902163,
+              36.53993309219616
+            ],
+            [
+              136.71914060200038,
+              36.675113783092364
+            ],
+            [
+              136.49538916902233,
+              36.67406272448
+            ],
+            [
+              136.49655956498262,
+              36.5388871694014
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07HD1",
+        "resource_name": "fr_mesh20m_07HD1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/49cae021-9946-4db0-ab5b-d0202a80a0b8/download/fr_mesh20m_07hd1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7184, 36.6751, 136.9429, 36.8109]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.71914060200038,
+              36.675113783092364
+            ],
+            [
+              136.9429013143422,
+              36.67574444567498
+            ],
+            [
+              136.94250852988128,
+              36.81092513886677
+            ],
+            [
+              136.7183550652488,
+              36.8102913839641
+            ],
+            [
+              136.71914060200038,
+              36.675113783092364
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07HD3",
+        "resource_name": "fr_mesh20m_07HD3_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/31bbfc73-79a7-426a-a737-5bc1886d02f2/download/fr_mesh20m_07hd3_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7191, 36.5399, 136.9433, 36.6757]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.71992091902163,
+              36.53993309219616
+            ],
+            [
+              136.94329148876866,
+              36.540560673088315
+            ],
+            [
+              136.9429013143422,
+              36.67574444567498
+            ],
+            [
+              136.71914060200038,
+              36.675113783092364
+            ],
+            [
+              136.71992091902163,
+              36.53993309219616
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07IB4",
+        "resource_name": "fr_mesh20m_07IB4_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/bf68b292-52f4-4ec5-aa18-87f0187a1063/download/fr_mesh20m_07ib4_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.0518, 36.2652, 136.2763, 36.4023]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.05374462566695,
+              36.26521287788909
+            ],
+            [
+              136.27630176720652,
+              36.267076862982776
+            ],
+            [
+              136.27476204728308,
+              36.40225147933053
+            ],
+            [
+              136.05182020941544,
+              36.40037831479023
+            ],
+            [
+              136.05374462566695,
+              36.26521287788909
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07IC1",
+        "resource_name": "fr_mesh20m_07IC1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/bc1741b5-72a1-4b00-b369-d8197dd3ada9/download/fr_mesh20m_07ic1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.2732, 36.4023, 136.4977, 36.5389]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.27476204728308,
+              36.40225147933053
+            ],
+            [
+              136.49772218589484,
+              36.403708511136166
+            ],
+            [
+              136.49655956498262,
+              36.5388871694014
+            ],
+            [
+              136.27321203301904,
+              36.53742297273364
+            ],
+            [
+              136.27476204728308,
+              36.40225147933053
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07IC2",
+        "resource_name": "fr_mesh20m_07IC2_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/c8fdebc7-d40d-44b7-8529-e243cb79a651/download/fr_mesh20m_07ic2_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.4966, 36.4037, 136.7207, 36.5399]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.49772218589484,
+              36.403708511136166
+            ],
+            [
+              136.72069605212005,
+              36.404749315676696
+            ],
+            [
+              136.71992091902163,
+              36.53993309219616
+            ],
+            [
+              136.49655956498262,
+              36.5388871694014
+            ],
+            [
+              136.49772218589484,
+              36.403708511136166
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07IC3",
+        "resource_name": "fr_mesh20m_07IC3_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/84a3b71f-3416-4c8d-99e0-509cd9495e44/download/fr_mesh20m_07ic3_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.2748, 36.2671, 136.4989, 36.4037]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.27630176720652,
+              36.267076862982776
+            ],
+            [
+              136.49887708489553,
+              36.26852675430159
+            ],
+            [
+              136.49772218589484,
+              36.403708511136166
+            ],
+            [
+              136.27476204728308,
+              36.40225147933053
+            ],
+            [
+              136.27630176720652,
+              36.267076862982776
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07IC4",
+        "resource_name": "fr_mesh20m_07IC4_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/59bd704a-24a7-4613-acd2-88a06e595bf0/download/fr_mesh20m_07ic4_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.4977, 36.2685, 136.7215, 36.4047]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.49887708489553,
+              36.26852675430159
+            ],
+            [
+              136.72146603672678,
+              36.269562458002916
+            ],
+            [
+              136.72069605212005,
+              36.404749315676696
+            ],
+            [
+              136.49772218589484,
+              36.403708511136166
+            ],
+            [
+              136.49887708489553,
+              36.26852675430159
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07ID1",
+        "resource_name": "fr_mesh20m_07ID1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/985b5da3-07eb-4455-b2cb-1b576869271a/download/fr_mesh20m_07id1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7199, 36.4047, 136.9437, 36.5406]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.72069605212005,
+              36.404749315676696
+            ],
+            [
+              136.94367907106638,
+              36.40537382541808
+            ],
+            [
+              136.94329148876866,
+              36.540560673088315
+            ],
+            [
+              136.71992091902163,
+              36.53993309219616
+            ],
+            [
+              136.72069605212005,
+              36.404749315676696
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07ID3",
+        "resource_name": "fr_mesh20m_07ID3_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/7b94c48c-2439-4d0d-87f9-ddff92e86cca/download/fr_mesh20m_07id3_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7207, 36.2696, 136.9441, 36.4054]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.72146603672678,
+              36.269562458002916
+            ],
+            [
+              136.94406407895306,
+              36.27018390704415
+            ],
+            [
+              136.94367907106638,
+              36.40537382541808
+            ],
+            [
+              136.72069605212005,
+              36.404749315676696
+            ],
+            [
+              136.72146603672678,
+              36.269562458002916
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07JB2",
+        "resource_name": "fr_mesh20m_07JB2_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/bb6a2838-0460-44e0-8633-337eb4fa34f3/download/fr_mesh20m_07jb2_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.0537, 36.13, 136.2778, 36.2671]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.05565626404749,
+              36.13004429186684
+            ],
+            [
+              136.27783126287605,
+              36.131899128579526
+            ],
+            [
+              136.27630176720652,
+              36.267076862982776
+            ],
+            [
+              136.05374462566695,
+              36.26521287788909
+            ],
+            [
+              136.05565626404749,
+              36.13004429186684
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07JC1",
+        "resource_name": "fr_mesh20m_07JC1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/571edab6-00cd-4d18-9f21-57e2d3832988/download/fr_mesh20m_07jc1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.2763, 36.1319, 136.5, 36.2685]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.27783126287605,
+              36.131899128579526
+            ],
+            [
+              136.50002431456377,
+              36.13334190358119
+            ],
+            [
+              136.49887708489553,
+              36.26852675430159
+            ],
+            [
+              136.27630176720652,
+              36.267076862982776
+            ],
+            [
+              136.27783126287605,
+              36.131899128579526
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07JC2",
+        "resource_name": "fr_mesh20m_07JC2_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/812f6202-a868-482b-a838-444af37ab4de/download/fr_mesh20m_07jc2_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.4989, 36.1333, 136.7222, 36.2696]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.50002431456377,
+              36.13334190358119
+            ],
+            [
+              136.7222309079013,
+              36.1343725237114
+            ],
+            [
+              136.72146603672678,
+              36.269562458002916
+            ],
+            [
+              136.49887708489553,
+              36.26852675430159
+            ],
+            [
+              136.50002431456377,
+              36.13334190358119
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07JC4",
+        "resource_name": "fr_mesh20m_07JC4_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/affab22e-4c88-4229-a44d-fc2508eb769b/download/fr_mesh20m_07jc4_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.5, 35.9982, 136.723, 36.1344]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.50116392692817,
+              35.99815396372469
+            ],
+            [
+              136.72299070033597,
+              35.999179517406354
+            ],
+            [
+              136.7222309079013,
+              36.1343725237114
+            ],
+            [
+              136.50002431456377,
+              36.13334190358119
+            ],
+            [
+              136.50116392692817,
+              35.99815396372469
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07JD1",
+        "resource_name": "fr_mesh20m_07JD1_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/4ba05097-c253-468e-8286-4bb31d6a8b3e/download/fr_mesh20m_07jd1_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7215, 36.1344, 136.9444, 36.2702]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.7222309079013,
+              36.1343725237114
+            ],
+            [
+              136.94444652996046,
+              36.13499092241497
+            ],
+            [
+              136.94406407895306,
+              36.27018390704415
+            ],
+            [
+              136.72146603672678,
+              36.269562458002916
+            ],
+            [
+              136.7222309079013,
+              36.1343725237114
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "mesh_code": "07JD3",
+        "resource_name": "fr_mesh20m_07JD3_2025.7z",
+        "download_url": "https://www.geospatial.jp/ckan/dataset/b8386aec-f565-4907-bd70-b231129885c4/resource/3f25209e-d6f7-41ae-93fb-b8251a41864f/download/fr_mesh20m_07jd3_2025.7z",
+        "system": "第7系 (VII)",
+        "bounds_wgs84": "[136.7222, 35.9992, 136.9448, 36.135]",
+        "available_in_ckan": "Yes"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              136.72299070033597,
+              35.999179517406354
+            ],
+            [
+              136.94482644143673,
+              35.99979487604741
+            ],
+            [
+              136.94444652996046,
+              36.13499092241497
+            ],
+            [
+              136.7222309079013,
+              36.1343725237114
+            ],
+            [
+              136.72299070033597,
+              35.999179517406354
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

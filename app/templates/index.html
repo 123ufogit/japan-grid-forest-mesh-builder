@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全国公共測量図郭 & 森林資源メッシュ全自動構築ツール</title>
+    <!-- Leaflet.js CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Control & Monitor Panel -->
+        <aside class="sidebar">
+            <header class="app-header">
+                <div class="brand">
+                    <span class="logo-icon">🌲</span>
+                    <div>
+                        <h1>全国公共測量図郭 & 森林資源メッシュ構築</h1>
+                        <p class="subtitle">全47都道府県対応 1/2,500図郭 (.geojson) & 20mメッシュ (.gpkg)</p>
+                    </div>
+                </div>
+                <div class="status-wrapper">
+                    <span id="status-badge" class="status-indicator idle">待機中</span>
+                </div>
+            </header>
+
+            <!-- Control Card -->
+            <div class="panel-section">
+                <h2>1. 対象自治体の選択</h2>
+                <div class="form-row">
+                    <div class="form-group flex-1">
+                        <label for="pref-select">都道府県</label>
+                        <select id="pref-select" class="form-control">
+                            <option value="">-- 都道府県を選択してください --</option>
+                        </select>
+                    </div>
+                    <div class="form-group flex-1">
+                        <label for="city-select">市町村 (任意)</label>
+                        <select id="city-select" class="form-control" disabled>
+                            <option value="">-- 都道府県を選択してください --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="pref-info-box" class="pref-info-box">
+                    <span id="info-pref-name" class="info-name">未選択</span>
+                    <span id="info-target-area" class="info-area">全国マップ表示中</span>
+                    <span id="info-system" class="info-tag">第-系</span>
+                    <span id="info-epsg" class="info-tag">EPSG:-</span>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="btn-start" class="btn btn-primary btn-block" disabled>
+                        <span>🚀</span> パイプライン処理を実行
+                    </button>
+                    <button id="btn-cancel" class="btn btn-danger btn-block" style="display: none;">
+                        <span>⛔</span> 処理を中止
+                    </button>
+                </div>
+            </div>
+
+            <!-- Steps & Progress Section -->
+            <div class="panel-section flex-1 overflow-hidden flex-col">
+                <div class="section-title-row">
+                    <h2>2. リアルタイム進行状況</h2>
+                    <span id="progress-pct" class="progress-pct-badge">0%</span>
+                </div>
+                
+                <div class="progress-bar-bg">
+                    <div id="progress-fill" class="progress-bar-fill" style="width: 0%;"></div>
+                </div>
+                <p id="progress-text" class="progress-status-msg">都道府県・自治体を選択してください</p>
+
+                <!-- Steps -->
+                <div class="pipeline-steps-mini">
+                    <div id="step-1" class="mini-step"><span class="step-num">1</span>図郭抽出</div>
+                    <div id="step-2" class="mini-step"><span class="step-num">2</span>メッシュDL</div>
+                    <div id="step-3" class="mini-step"><span class="step-num">3</span>空間集計</div>
+                    <div id="step-4" class="mini-step"><span class="step-num">4</span>ZIP出力</div>
+                </div>
+
+                <!-- Logs -->
+                <div class="log-container flex-1">
+                    <div id="log-window" class="log-window">
+                        <div class="log-entry system">[システム] 都道府県を選択してください</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Stats Section -->
+            <div id="result-card" class="panel-section result-section">
+                <h2>3. 集計結果 & 成果物</h2>
+                <div class="stats-mini-grid">
+                    <div class="stat-mini">
+                        <span class="stat-lbl">対象図郭</span>
+                        <span id="stat-zukaku" class="stat-val">-</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-lbl">20mメッシュ</span>
+                        <span id="stat-mesh" class="stat-val">-</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-lbl">森林面積</span>
+                        <span id="stat-forest-ha" class="stat-val">-</span>
+                    </div>
+                    <div class="stat-mini">
+                        <span class="stat-lbl">人工林率</span>
+                        <span id="stat-人工林率" class="stat-val">-</span>
+                    </div>
+                </div>
+
+                <div class="download-box">
+                    <a id="btn-download-zip" href="#" class="btn btn-success btn-block disabled">
+                        <span>📦</span> 成果物パック (.zip) ダウンロード
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Interactive Map Section -->
+        <main class="main-map-wrapper">
+            <div class="map-overlay-title">
+                <span class="map-icon">🗺️</span>
+                <span id="map-target-label">日本列島全域マップ (自治体を選択すると位置へズームインします)</span>
+            </div>
+            <div id="map" class="full-map"></div>
+        </main>
+    </div>
+
+    <!-- Leaflet.js -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+# Python / Virtual Environment
+.venv/
+.uv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+.env
+.env.local
+
+# Output / Download Directories (Ignore output artifacts & caches)
+outputs/
+outputs_test/
+downloads/
+app/core/cache_geojson/
+gpkg_by_zukaku/
+geojson_by_zukaku/
+spatial_layers_by_zukaku/
+
+# Archives & Temporary Files
+*.zip
+*.7z
+*.gz
+*.rar
+
+# OS / IDE generated files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
