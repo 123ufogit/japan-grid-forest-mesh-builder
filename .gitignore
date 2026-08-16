@@ -14,10 +14,13 @@ __pycache__/
 outputs/
 outputs_test/
 downloads/
+app/cache_geojson/
 app/core/cache_geojson/
 gpkg_by_zukaku/
 geojson_by_zukaku/
 spatial_layers_by_zukaku/
+temp_extracted/
+*.egg-info/
 
 # Archives & Temporary Files
 *.zip
