@@ -72,6 +72,55 @@ uv run python run_app.py
 
 ---
 
-## 📄 ライセンス
+## 📄 データ出典・謝意・ライセンス (Data Credits & Licenses)
 
+本ツールはオープンソースソフトウェアおよび各公共機関・オープンデータ提供元によるオープンデータ・成果物を活用して構築されています。
+
+### 1. 外部ライブラリおよびライセンス
+本ツールの構築には以下のオープンソースライブラリが使用されています：
+* **`japan-basic-section`**: MIT License (公共測量 1/2,500 図郭メッシュ計算)
+* **`GeoPandas` / `Shapely` / `PyPROJ` / `PyOGRIO`**: BSD / MIT License (空間データ解析)
+* **`FastAPI` / `Uvicorn`**: MIT License (Web バックエンドサーバー)
+* **`Leaflet.js`**: BSD 2-Clause License (インタラクティブ Web 地図描画)
+
+### 2. 利用データ・オープンデータ出典表記
+本ツールで取得・加工・解析しているデータセットの出典および利用条件は以下の通りです：
+
+* **森林資源メッシュデータ (20mメッシュ)**
+  * **出典**: 林野庁「森林資源メッシュデータ」（[G空間情報センター](https://www.geospatial.jp/) 経由で取得）
+  * **利用条件**: 利用規約に基づき、出典を明記のうえ加工・分析・成果物利用を行っています。
+* **行政区域境界データ**
+  * **出典**: 国土交通省「国土数値情報（行政区域データ N03）」（[niiyz/JapanCityGeoJson](https://github.com/niiyz/JapanCityGeoJson) および [amay077/JapanPrefGeoJson](https://github.com/amay077/JapanPrefGeoJson) を参照・利用）
+* **背景地図タイル**
+  * **出典**: © [OpenStreetMap](https://www.openstreetmap.org/) contributors (ODbL)
+
+### 3. 本ツールのライセンス
+本ツールのソースコード自体は **[MIT License](LICENSE)** のもとで公開されています。
+
+---
+
+## 📄 ライセンス本文
+
+```text
 MIT License
+
+Copyright (c) 2026 123ufogit
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
