@@ -1,9 +1,10 @@
-// JavaScript for Japan GIS Pipeline Dashboard (With Map Legend & Persistent Boundary Overlay)
+// JavaScript for Japan GIS Pipeline Dashboard (DEM & Slope Map Edition)
 
 document.addEventListener('DOMContentLoaded', () => {
     let prefectures = [];
     let currentPref = null;
     let currentCity = 'ALL';
+    let selectedResolution = '5m';
     let map = null;
     let boundaryLayer = null;
     let liveZukakuLayerGroup = null;
@@ -12,13 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
     let pollTimer = null;
     let animTimer = null;
 
-    // Elements
+    // UI Elements
     const prefSelect = document.getElementById('pref-select');
     const citySelect = document.getElementById('city-select');
     const infoName = document.getElementById('info-pref-name');
     const infoSystem = document.getElementById('info-system');
     const infoEpsg = document.getElementById('info-epsg');
     const infoTargetArea = document.getElementById('info-target-area');
+
+    const btnRes5m = document.getElementById('btn-res-5m');
+    const btnRes10m = document.getElementById('btn-res-10m');
+    const demAvailStatus = document.getElementById('dem-avail-status');
+    const chkGenerateSlope = document.getElementById('chk-generate-slope');
 
     const btnStart = document.getElementById('btn-start');
     const btnCancel = document.getElementById('btn-cancel');
@@ -30,15 +36,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const btnDownloadZip = document.getElementById('btn-download-zip');
     const statZukaku = document.getElementById('stat-zukaku');
-    const statMesh = document.getElementById('stat-mesh');
-    const statForestHa = document.getElementById('stat-forest-ha');
-    const statArtificialPct = document.getElementById('stat-人工林率');
+    const statResolution = document.getElementById('stat-resolution');
+    const statElevationRange = document.getElementById('stat-elevation-range');
+    const statMeanElevation = document.getElementById('stat-mean-elevation');
     const mapTargetLabel = document.getElementById('map-target-label');
 
-    // 1. マップ初期化 (初期状態：日本列島全体俯瞰)
+    // 1. マップ初期化
     initMap();
 
-    // 2. 都道府県一覧の取得
+    // 2. 解像度ボタンイベント
+    btnRes5m.addEventListener('click', () => {
+        if (btnRes5m.disabled) return;
+        selectedResolution = '5m';
+        btnRes5m.classList.add('active');
+        btnRes10m.classList.remove('active');
+    });
+
+    btnRes10m.addEventListener('click', () => {
+        if (btnRes10m.disabled) return;
+        selectedResolution = '10m';
+        btnRes10m.classList.add('active');
+        btnRes5m.classList.remove('active');
+    });
+
+    // 3. 都道府県一覧の取得
     fetch('/api/prefectures')
         .then(res => res.json())
         .then(data => {
@@ -58,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
             opt.textContent = `${p.code}. ${p.name} (第${p.system}系)`;
             prefSelect.appendChild(opt);
         });
-        // 初期状態は未選択にする
         prefSelect.value = "";
         citySelect.disabled = true;
         citySelect.innerHTML = '<option value="">-- 都道府県を選択してください --</option>';
@@ -93,6 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
         citySelect.disabled = true;
         citySelect.innerHTML = '<option value="">-- 都道府県を選択してください --</option>';
         btnStart.disabled = true;
+        demAvailStatus.textContent = '自治体を選択すると整備状況を確認します';
+        btnRes5m.disabled = false;
+        btnRes10m.disabled = false;
         
         clearAllMapLayers(false);
         map.setView([36.5, 137.5], 5.5, { animate: true });
@@ -106,15 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
             infoSystem.textContent = `第${currentPref.system}系`;
             infoEpsg.textContent = `EPSG:${currentPref.epsg}`;
 
-            // 前の都道府県の市町村選択肢を完全リセット＆最新市町村取得
             fetchMunicipalities(currentPref.code);
         }
     }
 
-    // 都道府県選択変更時に市町村リストを【完全クリア・リセット】する関数
     function fetchMunicipalities(prefCode) {
         citySelect.disabled = true;
-        citySelect.innerHTML = '<option value="ALL">⏳ 市町村リストを読み込み中... お待ちください</option>';
+        citySelect.innerHTML = '<option value="ALL">⏳ 市町村リストを読み込み中... お待たせしております</option>';
         currentCity = 'ALL';
         infoTargetArea.textContent = '都道府県全域';
 
@@ -140,28 +161,55 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // 自治体・都道府県選択時に自動クローズアップする関数
     function zoomToBoundary(prefCode, city) {
         initMap();
         const areaTitle = (city && city !== 'ALL') ? `${currentPref.name} ${city}` : `${currentPref.name} 全域`;
         
-        // ★新しい自治体が選択されたら前の自治体境界 GeoJSON を確実に消去★
         if (boundaryLayer) {
             map.removeLayer(boundaryLayer);
             boundaryLayer = null;
         }
 
-        // ⏳ ロード中メッセージの表示
-        mapTargetLabel.innerHTML = `⏳ ${areaTitle} の位置データを取得・ズーム調整中... 少々お待ちください`;
-        progressText.textContent = `⏳ ${areaTitle} の境界データを読み込み中... お待ちください`;
+        mapTargetLabel.innerHTML = `⏳ ${areaTitle} の位置データを取得・DEM整備状況確認中...`;
+        progressText.textContent = `⏳ ${areaTitle} の境界データおよびDEM整備情報を確認中...`;
         prefSelect.disabled = true;
         citySelect.disabled = true;
         btnStart.disabled = true;
+        demAvailStatus.textContent = '⏳ DEM整備状況を判定中...';
 
         let url = `/api/boundary-polygon/${prefCode}`;
         if (city && city !== 'ALL') {
             url += `?city_name=${encodeURIComponent(city)}`;
         }
+
+        let checkUrl = `/api/check-dem-availability/${prefCode}`;
+        if (city && city !== 'ALL') {
+            checkUrl += `?city_name=${encodeURIComponent(city)}`;
+        }
+
+        fetch(checkUrl)
+            .then(res => res.json())
+            .then(avail => {
+                btnRes5m.disabled = !avail['5m'];
+                btnRes10m.disabled = !avail['10m'];
+
+                if (!avail['5m'] && selectedResolution === '5m') {
+                    selectedResolution = '10m';
+                    btnRes10m.classList.add('active');
+                    btnRes5m.classList.remove('active');
+                }
+
+                if (avail['5m'] && avail['10m']) {
+                    demAvailStatus.textContent = '🟢 5m / 10m メッシュ共に整備されています';
+                } else if (avail['10m']) {
+                    demAvailStatus.textContent = '🟠 10m メッシュのみ利用可能です (5m未整備)';
+                } else {
+                    demAvailStatus.textContent = '⚪ 国土地理院 DEM のサンプル取得を確認できませんでした';
+                }
+            })
+            .catch(err => {
+                demAvailStatus.textContent = 'ℹ️ 10m メッシュ推奨';
+            });
 
         fetch(url)
             .then(res => {
@@ -197,7 +245,142 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // 3. パイプライン実行トリガー
+    // 知識データベース (解説用モーダル表示データ)
+    const ANALYSIS_KNOWLEDGE = {
+        slope: {
+            title: "傾斜角 (Slope Map)",
+            icon: "📐",
+            category: "地形幾何学・傾斜解析",
+            output: "GeoTIFF (.tif) [単位: 度 (°)]",
+            description: "DEM標高格子データの各セルにおける水平・垂直方向の標高差（勾配ベクトル）から、地表の傾斜角度（0°〜90°）を算出します。",
+            formula: "Slope = arctan( sqrt( (dz/dx)^2 + (dz/dy)^2 ) ) * (180 / π)",
+            applications: [
+                "土砂災害・地すべり危険傾斜地（30°〜45°）のスクリーニング",
+                "森林作業道・林道の開設に適した緩傾斜線の特定",
+                "農地・造成地・土木施工における勾配判定"
+            ]
+        },
+        aspect: {
+            title: "斜面方位 (Aspect Map)",
+            icon: "🧭",
+            category: "日照・微気象解析",
+            output: "GeoTIFF (.tif) [単位: 度 (0°~360°, 北=0°)]",
+            description: "斜面が東西南北のどの方向を向いているかを計算します。太陽光の照射角度や季節ごとの日照時間、微気象に直結します。",
+            formula: "Aspect = mod(90° - arctan2(dz/dy, -dz/dx) * (180 / π), 360°)",
+            applications: [
+                "太陽光発電パネルの設置に最適な南向き斜面の抽出",
+                "積雪・雪解け速度の地域的シミュレーション",
+                "樹木・植生の自生分布や陽樹・陰樹の環境判定"
+            ]
+        },
+        hillshade: {
+            title: "陰影起伏 (Hillshade Map)",
+            icon: "☀️",
+            category: "視覚化・地形可視化",
+            output: "GeoTIFF (.tif) [輝度: 0-255]",
+            description: "仮想的な太陽光源（デフォルト: 方位角315°、高度45°）を設定し、地形の法線ベクトルとの内積から立体的な影を計算描画します。",
+            formula: "Hillshade = 255 * (cos(Zenith) * cos(Slope) + sin(Zenith) * sin(Slope) * cos(Azimuth - Aspect))",
+            applications: [
+                "2D背景地図への重畳による高度な立体地形描画",
+                "活断層・リニアメント・地すべり崖の目視判読",
+                "航空写真・衛星画像の手法比較と地形認識強化"
+            ]
+        },
+        curvature: {
+            title: "地形曲率 (Curvature Map)",
+            icon: "〰️",
+            category: "水文・地形微形態",
+            output: "GeoTIFF (.tif) [正: 尾根, 負: 谷]",
+            description: "標高曲面の2次微分（ラプラシアン）を計算し、地表の凹凸状況を数値化します。正の数値は周囲より張り出した尾根、負の数値は窪んだ谷筋を示します。",
+            formula: "Curvature = ∇²z = (d²z / dx²) + (d²z / dy²)",
+            applications: [
+                "雨水・表面流出水が集中する潜在的な谷筋（水路）の自動特定",
+                "尾根筋・山頂地形の自動抽出",
+                "表層崩壊・土砂流出が起きやすい集水窪地の判定"
+            ]
+        },
+        csmap: {
+            title: "CS立体図 (CS Map)",
+            icon: "🗺️",
+            category: "日本発・高度微地形表現",
+            output: "RGBカラー GeoTIFF (.tif) [3チャンネル 8bit]",
+            description: "長野県林業総合センターが開発した高度地形表現手法。標高曲率（凸部＝赤、凹部＝青）と傾斜角（輝度）をカラー合成し、森林下でも微地形を鮮明に浮き立たせます。",
+            formula: "R: 尾根曲率(赤) + 輝度, G: 傾斜逆転(緑), B: 谷曲率(青) + 輝度",
+            applications: [
+                "樹木に隠れた古道・山城跡・崩壊痕・微地形の発見",
+                "地すべり移動体・崖・危険個所の精密地形判読",
+                "現地踏査前の高精度作業道設計"
+            ]
+        },
+        twi: {
+            title: "地形湿潤指数 (TWI: Topographic Wetness Index)",
+            icon: "💧",
+            category: "水文・土壌環境解析",
+            output: "GeoTIFF (.tif) [無次元指数]",
+            description: "上流からの集水面積（a）と斜面傾斜（tan β）の比率から、水分の集積しやすさ・湿潤度を算出します。",
+            formula: "TWI = ln( a / tan(β) )",
+            applications: [
+                "雨天時に泥濘（でいねい）化しやすい林道・作業道の予測",
+                "湧水ポイント・地下水涵養域の特定",
+                "湿地性植物の生育適地や湿潤土壌の分布推定"
+            ]
+        },
+        viewshed: {
+            title: "可視領域解析 (Viewshed Map)",
+            icon: "👁️",
+            category: "景観・視認性解析",
+            output: "GeoTIFF (.tif) [1: 可視, 0: 視蔽]",
+            description: "特定観測点（標高＋視線高2m）から、周辺の山や尾根による遮蔽を計算し、直接見通せる視界範囲を解析します。",
+            formula: "Line-of-Sight Raycasting (Elevation Angle vs Distance Comparison)",
+            applications: [
+                "無線通信タワー・基地局の電波カバーエリア推定",
+                "風力発電・太陽光発電施設の景観影響評価",
+                "避難所・監視カメラ・展望台の見通し範囲調査"
+            ]
+        }
+    };
+
+    // ヘルプボタン モーダル発出イベントの設定
+    document.querySelectorAll('.help-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const techKey = btn.getAttribute('data-tech');
+            const data = ANALYSIS_KNOWLEDGE[techKey];
+            if (!data) return;
+
+            document.getElementById('modal-icon').textContent = data.icon;
+            document.getElementById('modal-title').textContent = data.title;
+            document.getElementById('modal-category').textContent = data.category;
+            document.getElementById('modal-output').textContent = data.output;
+            document.getElementById('modal-description').textContent = data.description;
+            document.getElementById('modal-formula').textContent = data.formula;
+
+            const appList = document.getElementById('modal-applications');
+            appList.innerHTML = '';
+            data.applications.forEach(appText => {
+                const li = document.createElement('li');
+                li.textContent = `• ${appText}`;
+                appList.appendChild(li);
+            });
+
+            document.getElementById('help-modal').style.display = 'flex';
+        });
+    });
+
+    const helpModal = document.getElementById('help-modal');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+
+    modalCloseBtn.addEventListener('click', () => {
+        helpModal.style.display = 'none';
+    });
+
+    helpModal.addEventListener('click', (e) => {
+        if (e.target === helpModal) {
+            helpModal.style.display = 'none';
+        }
+    });
+
+    // 4. パイプライン実行
     btnStart.addEventListener('click', () => {
         if (!currentPref || !prefSelect.value) {
             alert('都道府県を選択してください。');
@@ -206,6 +389,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const selectedCode = currentPref.code;
         const selectedCity = citySelect.value || 'ALL';
+        
+        const chkSlope = document.getElementById('chk-slope').checked;
+        const chkAspect = document.getElementById('chk-aspect').checked;
+        const chkHillshade = document.getElementById('chk-hillshade').checked;
+        const chkCurvature = document.getElementById('chk-curvature').checked;
+        const chkCsmap = document.getElementById('chk-csmap').checked;
+        const chkTwi = document.getElementById('chk-twi').checked;
+        const chkViewshed = document.getElementById('chk-viewshed').checked;
 
         btnStart.style.display = 'none';
         btnCancel.style.display = 'block';
@@ -213,15 +404,23 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStatus('running', '実行中');
         clearLogs();
         resetSteps();
-        clearAllMapLayers(true); // 境界 GeoJSON は継続保持
+        clearAllMapLayers(true);
 
         const areaLabel = (selectedCity === 'ALL') ? `${currentPref.name}全域` : `${currentPref.name} ${selectedCity}`;
-        logMessage(`=== ${areaLabel}（第${currentPref.system}系, EPSG:${currentPref.epsg}）の構築を開始します ===`, 'system');
+        logMessage(`=== ${areaLabel}（DEM解像度: ${selectedResolution}）の多角GIS構築を開始します ===`, 'system');
         updateProgress(5, 'タスク起動中...');
 
-        let url = `/api/process/${selectedCode}`;
+        let url = `/api/process/${selectedCode}?resolution=${selectedResolution}` +
+                  `&generate_slope=${chkSlope}` +
+                  `&aspect=${chkAspect}` +
+                  `&hillshade=${chkHillshade}` +
+                  `&curvature=${chkCurvature}` +
+                  `&csmap=${chkCsmap}` +
+                  `&twi=${chkTwi}` +
+                  `&viewshed=${chkViewshed}`;
+
         if (selectedCity !== 'ALL') {
-            url += `?city_name=${encodeURIComponent(selectedCity)}`;
+            url += `&city_name=${encodeURIComponent(selectedCity)}`;
         }
 
         fetch(url, { method: 'POST' })
@@ -241,6 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 resetButtons();
             });
     });
+
 
     btnCancel.addEventListener('click', () => {
         btnCancel.disabled = true;
@@ -279,12 +479,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateProgress(data.pct, data.msg);
                     updateStepIndicator(data.pct);
 
-                    // 1/2,500 図郭抽出ログや地区完了ログに連動して順次アニメーション描画
                     if (data.msg.includes('図郭数:') || data.pct >= 15) {
                         tryLoadLiveZukakuAnimation();
-                    }
-                    if (data.msg.includes('20mメッシュ GPKG 作成完了')) {
-                        highlightDistrictAnimation(data.msg);
                     }
                 }
             } catch (err) {}
@@ -326,11 +522,10 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.error('Poll error:', err));
     }
 
-    // 順次パラパラと描画するシーケンシャル・アニメーションエンジン
     function tryLoadLiveZukakuAnimation() {
-        if (animatedFeatureIds.size > 0) return; // 既に開始済み
+        if (animatedFeatureIds.size > 0) return;
 
-        let url = `/api/live-zukaku/${currentPref.code}`;
+        let url = `/api/preview/${currentPref.code}`;
         if (currentCity && currentCity !== 'ALL') {
             url += `?city_name=${encodeURIComponent(currentCity)}`;
         }
@@ -348,9 +543,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     liveZukakuLayerGroup = L.layerGroup().addTo(map);
                 }
 
-                mapTargetLabel.textContent = `リアルタイム可視化: 図郭メッシュ順次描画中 (${features.length} 区画)`;
+                mapTargetLabel.textContent = `可視化: 1/2,500 公共図郭メッシュ描画中 (${features.length} 区画)`;
 
-                // 20ms 間隔で図郭ポリゴンをパラパラとアニメーション描画
                 let idx = 0;
                 if (animTimer) clearInterval(animTimer);
 
@@ -365,15 +559,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const layer = L.geoJSON(feat, {
                         style: {
-                            color: '#059669',
+                            color: '#06b6d4',
                             weight: 1.5,
-                            fillColor: '#10b981',
-                            fillOpacity: 0.35
+                            fillColor: '#0891b2',
+                            fillOpacity: 0.25
                         }
                     });
                     liveZukakuLayerGroup.addLayer(layer);
                     idx++;
-                }, 20);
+                }, 15);
 
                 const fullGeojsonLayer = L.geoJSON(geojson);
                 if (fullGeojsonLayer.getBounds().isValid()) {
@@ -381,14 +575,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .catch(err => {});
-    }
-
-    function highlightDistrictAnimation(msg) {
-        if (!liveZukakuLayerGroup) return;
-        // 地区完了時に発光エフェクト
-        liveZukakuLayerGroup.eachLayer(layer => {
-            layer.setStyle({ color: '#34d399', fillColor: '#10b981', fillOpacity: 0.5, weight: 2 });
-        });
     }
 
     function stopMonitoring() {
@@ -424,14 +610,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pct >= 10 && s1) s1.classList.add('done');
         else if (s1) s1.classList.add('active');
 
-        if (pct >= 45 && s2) s2.classList.add('done');
+        if (pct >= 70 && s2) s2.classList.add('done');
         else if (pct >= 10 && s2) s2.classList.add('active');
 
-        if (pct >= 85 && s3) s3.classList.add('done');
-        else if (pct >= 45 && s3) s3.classList.add('active');
+        if (pct >= 90 && s3) s3.classList.add('done');
+        else if (pct >= 70 && s3) s3.classList.add('active');
 
         if (pct >= 100 && s4) s4.classList.add('done');
-        else if (pct >= 85 && s4) s4.classList.add('active');
+        else if (pct >= 90 && s4) s4.classList.add('active');
     }
 
     function resetSteps() {
@@ -477,30 +663,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const summary = (result && result.summary) ? result.summary : {};
         statZukaku.textContent = (summary.total_zukaku || 0).toLocaleString();
-        statMesh.textContent = (summary.total_mesh || 0).toLocaleString();
-        statForestHa.textContent = `${(summary.total_forest_ha || 0).toLocaleString()} ha`;
-        statArtificialPct.textContent = `${summary.avg_人工林率 || 0} %`;
+        statResolution.textContent = summary.resolution || selectedResolution;
+        
+        if (summary.min_elevation_m !== undefined && summary.max_elevation_m !== undefined) {
+            statElevationRange.textContent = `${summary.min_elevation_m}m ~ ${summary.max_elevation_m}m`;
+        } else {
+            statElevationRange.textContent = '-';
+        }
+        
+        statMeanElevation.textContent = (summary.mean_elevation_m !== undefined) ? `${summary.mean_elevation_m} m` : '-';
+
+        const genContainer = document.getElementById('generated-layers-container');
+        const genList = document.getElementById('generated-layers-list');
+        if (genContainer && genList) {
+            genList.innerHTML = '';
+            let layerCount = 0;
+
+            const createDlBadge = (filename, icon = '🗺️') => {
+                const a = document.createElement('a');
+                let singleDlUrl = `/api/download-file/${currentPref.code}/${encodeURIComponent(filename)}`;
+                if (currentCity && currentCity !== 'ALL') {
+                    singleDlUrl += `?city_name=${encodeURIComponent(currentCity)}`;
+                }
+                a.href = singleDlUrl;
+                a.target = '_blank';
+                a.className = 'layer-badge clickable';
+                a.title = 'クリックして個別にダウンロード';
+                a.innerHTML = `${icon} ${filename} <span>⬇️</span>`;
+                return a;
+            };
+
+            if (summary.dem_geotiff) {
+                genList.appendChild(createDlBadge(summary.dem_geotiff, '📄'));
+                layerCount++;
+            }
+            if (summary.generated_layers) {
+                Object.values(summary.generated_layers).forEach(layerName => {
+                    genList.appendChild(createDlBadge(layerName, '🗺️'));
+                    layerCount++;
+                });
+            }
+            genContainer.style.display = (layerCount > 0) ? 'block' : 'none';
+        }
+
 
         loadMapPreview(currentPref.code, currentCity);
     }
 
+
     function initMap() {
         if (map) return;
-        map = L.map('map').setView([36.5, 137.5], 5.5); // 初期表示：日本全域
+        map = L.map('map').setView([36.5, 137.5], 5.5);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
-            attribution: '© OpenStreetMap contributors'
+            attribution: '© OpenStreetMap contributors | 地理院タイル'
         }).addTo(map);
 
-        // ★「20mメッシュ情報」凡例コントロールの追加★
         const legend = L.control({ position: 'bottomright' });
         legend.onAdd = function () {
             const div = L.DomUtil.create('div', 'map-legend');
             div.innerHTML = `
-                <div class="legend-title">20mメッシュ情報 凡例</div>
-                <div class="legend-item"><span class="legend-color" style="background:#10b981;"></span> <b>取得</b> (全域データ取得)</div>
-                <div class="legend-item"><span class="legend-color" style="background:#f59e0b;"></span> <b>一部取得</b> (一部データ取得)</div>
-                <div class="legend-item"><span class="legend-color" style="background:#6b7280;"></span> <b>未取得</b> (データ無し)</div>
+                <div class="legend-title">地図表示凡例</div>
+                <div class="legend-item"><span class="legend-color" style="background:#06b6d4;"></span> <b>対象領域 / 行政境界</b></div>
+                <div class="legend-item"><span class="legend-color" style="background:#0891b2; opacity:0.6;"></span> <b>1/2,500 公共図郭</b></div>
+                <div class="legend-item"><span class="legend-color" style="background:#10b981;"></span> <b>DEM (5m/10m) 解析済</b></div>
             `;
             return div;
         };
@@ -520,52 +746,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 return res.json();
             })
             .then(geojson => {
-                clearAllMapLayers(true); // ★境界 GeoJSON は継続表示★
+                clearAllMapLayers(true);
 
                 const finalLayer = L.geoJSON(geojson, {
-                    style: (feature) => {
-                        const status20m = feature.properties['20mメッシュ情報'] || '未取得';
-                        let color = '#6b7280'; // 未取得: グレー
-                        let strokeColor = '#4b5563';
-                        let opacity = 0.25;
-
-                        if (status20m === '取得') {
-                            color = '#10b981'; // 取得: エメラルドグリーン
-                            strokeColor = '#059669';
-                            opacity = 0.45;
-                        } else if (status20m === '一部取得') {
-                            color = '#f59e0b'; // 一部取得: アンバーオレンジ
-                            strokeColor = '#d97706';
-                            opacity = 0.45;
-                        }
-
-                        return {
-                            color: strokeColor,
-                            weight: 1.5,
-                            fillColor: color,
-                            fillOpacity: opacity
-                        };
+                    style: {
+                        color: '#059669',
+                        weight: 1.5,
+                        fillColor: '#10b981',
+                        fillOpacity: 0.35
                     },
                     onEachFeature: (feature, layer) => {
                         const props = feature.properties;
-                        const status20m = props['20mメッシュ情報'] || '未取得';
-                        let badgeColor = '#6b7280';
-                        if (status20m === '取得') badgeColor = '#10b981';
-                        else if (status20m === '一部取得') badgeColor = '#f59e0b';
-
-                        let popupHtml = `<b>図郭コード: ${props.zukaku_code}</b><br>`;
-                        popupHtml += `<span style="background:${badgeColor}; color:#000; padding:2px 6px; border-radius:4px; font-weight:bold; font-size:0.75rem;">20mメッシュ情報: ${status20m}</span><hr style="margin:6px 0;">`;
-                        popupHtml += `天然林: ${props['天然林'] || 0} ha<br>`;
-                        popupHtml += `人工林: ${props['人工林'] || 0} ha<br>`;
-                        popupHtml += `無林木地: ${props['無林木地'] || 0} ha<br>`;
-                        popupHtml += `<b>総森林面積: ${props['合計'] || 0} ha</b><br>`;
-                        popupHtml += `<b>人工林率: ${props['人工林率'] || 0} %</b>`;
+                        let popupHtml = `<b>図郭コード: ${props.code || props.zukaku_code}</b><br>`;
+                        popupHtml += `図郭区分: 1/2,500 公共測量図郭<br>`;
+                        popupHtml += `DEMフォーマット: GeoTIFF (.tif)<br>`;
                         layer.bindPopup(popupHtml);
                     }
                 }).addTo(map);
 
                 const areaTitle = (city && city !== 'ALL') ? `${currentPref.name} ${city}` : `${currentPref.name} 全域`;
-                mapTargetLabel.textContent = `最終成果物プレビュー: ${areaTitle} (全 ${geojson.features ? geojson.features.length : 0} 区画)`;
+                mapTargetLabel.textContent = `成果物プレビュー: ${areaTitle} (全 ${geojson.features ? geojson.features.length : 0} 図郭)`;
 
                 if (finalLayer.getBounds().isValid()) {
                     map.fitBounds(finalLayer.getBounds(), { padding: [30, 30], animate: true });

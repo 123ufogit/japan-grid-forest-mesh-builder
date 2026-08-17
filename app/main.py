@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-全国対応 公共測量図郭 & 森林資源メッシュ全自動構築 GUI Web App
-FastAPI バックエンドメインサーバー (GeoJSON 完全一本化版)
+全国対応 公共測量図郭 & 国土地理院 DEM (5m/10m) / 傾斜分布図 構築 GUI Web App
+FastAPI バックエンドメインサーバー
 """
 
 import os
@@ -17,13 +17,15 @@ import geopandas as gpd
 
 from app.core.prefectures import PREFECTURE_MASTER, get_pref_info, get_municipalities
 from app.core.pipeline import PipelineRunner, TaskCanceledException
+from app.core.boundary import fetch_boundary_geojson
+from app.core.dem import check_dem_availability
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 app = FastAPI(
-    title="全国公共測量図郭 & 森林資源メッシュ構築ツール",
-    description="全47都道府県対応 1/2,500図郭および20m森林メッシュ一括構築パイプライン (GeoJSON 形式)",
-    version="2.0.0"
+    title="全国公共測量図郭 & 国土地理院DEM/傾斜分布図構築ツール",
+    description="全47都道府県対応 1/2,500図郭および国土地理院DEM(5m/10m)・傾斜分布図一括構築パイプライン",
+    version="3.0.0"
 )
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -70,7 +72,11 @@ def is_cancel_requested() -> bool:
 
 @app.get("/", response_class=HTMLResponse)
 async def index_page(request: Request):
-    return templates.TemplateResponse(request=request, name="index.html", context={"prefectures": PREFECTURE_MASTER})
+    template = templates.get_template("index.html")
+    content = template.render({"request": request, "prefectures": PREFECTURE_MASTER})
+    return HTMLResponse(content=content)
+
+
 
 @app.get("/api/prefectures")
 async def get_prefectures_api():
@@ -94,7 +100,30 @@ async def stream_logs():
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
-def run_pipeline_task(pref_code: str, city_name: Optional[str] = None):
+@app.get("/api/check-dem-availability/{pref_code}")
+async def check_dem_availability_api(pref_code: str, city_name: Optional[str] = Query(None)):
+    """
+    指定自治体において国土地理院 5m/10m DEM が利用可能か高速判定
+    """
+    try:
+        c_name = city_name if (city_name and city_name != "ALL") else None
+        gdf = fetch_boundary_geojson(pref_code, c_name)
+        if gdf is None or len(gdf) == 0:
+            return JSONResponse(content={"5m": False, "10m": True})
+        
+        bounds = tuple(gdf.to_crs(epsg=4326).total_bounds)
+        availability = check_dem_availability(bounds)
+        return JSONResponse(content=availability)
+    except Exception as e:
+        return JSONResponse(content={"5m": False, "10m": True, "error": str(e)})
+
+def run_pipeline_task(
+    pref_code: str,
+    city_name: Optional[str] = None,
+    resolution: str = "5m",
+    generate_slope: bool = True,
+    analysis_options: dict = None
+):
     global current_task_status
     pref_info = get_pref_info(pref_code)
     if not pref_info:
@@ -115,6 +144,9 @@ def run_pipeline_task(pref_code: str, city_name: Optional[str] = None):
             pref_code,
             OUTPUT_BASE_DIR,
             city_name=city_name,
+            resolution=resolution,
+            generate_slope=generate_slope,
+            analysis_options=analysis_options,
             auto_cleanup=True,
             log_callback=log_event_sync,
             cancel_check=is_cancel_requested
@@ -134,14 +166,42 @@ def run_pipeline_task(pref_code: str, city_name: Optional[str] = None):
         log_event_sync(f"エラーが発生しました: {e}", current_task_status["progress"])
 
 @app.post("/api/process/{pref_code}")
-async def start_process(pref_code: str, background_tasks: BackgroundTasks, city_name: Optional[str] = Query(None)):
+async def start_process(
+    pref_code: str,
+    background_tasks: BackgroundTasks,
+    city_name: Optional[str] = Query(None),
+    resolution: str = Query("5m"),
+    generate_slope: bool = Query(True),
+    aspect: bool = Query(False),
+    hillshade: bool = Query(False),
+    curvature: bool = Query(False),
+    csmap: bool = Query(False),
+    twi: bool = Query(False),
+    viewshed: bool = Query(False)
+):
     global current_task_status
     if current_task_status["status"] == "running":
         raise HTTPException(status_code=400, detail="現在別のパイプラインタスクが実行中です。")
 
     current_task_status["cancel_requested"] = False
-    background_tasks.add_task(run_pipeline_task, pref_code, city_name)
-    return JSONResponse(content={"message": "タスクを開始しました", "pref_code": pref_code, "city_name": city_name})
+    analysis_opts = {
+        "slope": generate_slope,
+        "aspect": aspect,
+        "hillshade": hillshade,
+        "curvature": curvature,
+        "csmap": csmap,
+        "twi": twi,
+        "viewshed": viewshed
+    }
+    background_tasks.add_task(run_pipeline_task, pref_code, city_name, resolution, generate_slope, analysis_opts)
+    return JSONResponse(content={
+        "message": "タスクを開始しました",
+        "pref_code": pref_code,
+        "city_name": city_name,
+        "resolution": resolution,
+        "analysis_options": analysis_opts
+    })
+
 
 @app.post("/api/cancel")
 async def cancel_process():
@@ -157,11 +217,6 @@ async def download_zip(pref_code: str, city_name: Optional[str] = Query(None)):
     pref_info = get_pref_info(pref_code)
     if not pref_info:
         raise HTTPException(status_code=404, detail="都道府県が見つかりません")
-
-    if current_task_status.get("result") and current_task_status["result"].get("zip_path"):
-        zip_p = current_task_status["result"]["zip_path"]
-        if os.path.exists(zip_p):
-            return FileResponse(zip_p, media_type="application/zip", filename=os.path.basename(zip_p))
 
     pref_name = pref_info["name"]
     target_dirs = []
@@ -180,39 +235,55 @@ async def download_zip(pref_code: str, city_name: Optional[str] = Query(None)):
         raise HTTPException(status_code=404, detail="成果物ディレクトリが見つかりません。処理を実行してください。")
 
     spatial_dir = os.path.join(found_target_dir, "spatial_layers_by_zukaku")
-    if not os.path.exists(spatial_dir):
-        spatial_dir = os.path.join(found_target_dir, "geojson_by_zukaku")
-    if not os.path.exists(spatial_dir):
-        spatial_dir = os.path.join(found_target_dir, "gpkg_by_zukaku")
 
     if not os.path.exists(spatial_dir):
         raise HTTPException(status_code=404, detail="成果物ファイルが存在しません。処理を実行してください。")
 
-    # ZIP ファイルの検索または生成
-    zip_filepath = None
-    for f in os.listdir(found_target_dir):
-        if f.endswith(".zip"):
-            zip_filepath = os.path.join(found_target_dir, f)
-            break
+    # 最新の spatial_layers_by_zukaku 内の全ファイルを ZIP へリアルタイム圧縮
+    zip_filename = os.path.basename(found_target_dir).replace("output_", "") + "_dem_spatial_pack.zip"
+    zip_filepath = os.path.join(found_target_dir, zip_filename)
 
-    if not zip_filepath or not os.path.exists(zip_filepath):
-        zip_filename = os.path.basename(found_target_dir).replace("output_", "") + "_spatial_pack.zip"
-        zip_filepath = os.path.join(found_target_dir, zip_filename)
-        with zipfile.ZipFile(zip_filepath, 'w', zipfile.ZIP_DEFLATED) as zf:
-            for root, dirs, files in os.walk(spatial_dir):
-                for fn in files:
-                    fp = os.path.join(root, fn)
-                    rel_p = os.path.relpath(fp, spatial_dir)
-                    zf.write(fp, arcname=os.path.join("spatial_layers_by_zukaku", rel_p))
+    with zipfile.ZipFile(zip_filepath, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for root, dirs, files in os.walk(spatial_dir):
+            for fn in files:
+                fp = os.path.join(root, fn)
+                rel_p = os.path.relpath(fp, spatial_dir)
+                zf.write(fp, arcname=os.path.join("spatial_layers_by_zukaku", rel_p))
 
     return FileResponse(zip_filepath, media_type="application/zip", filename=os.path.basename(zip_filepath))
 
+@app.get("/api/download-file/{pref_code}/{filename}")
+async def download_single_file(pref_code: str, filename: str, city_name: Optional[str] = Query(None)):
+    """成果物 GeoTIFF / GeoJSON を個別ダウンロード"""
+    pref_info = get_pref_info(pref_code)
+    if not pref_info:
+        raise HTTPException(status_code=404, detail="都道府県が見つかりません")
+
+    pref_name = pref_info["name"]
+    target_dirs = []
+    if city_name and city_name != "ALL":
+        target_dirs.append(os.path.join(OUTPUT_BASE_DIR, f"output_{pref_code}_{pref_name}_{city_name}"))
+    target_dirs.append(os.path.join(OUTPUT_BASE_DIR, f"output_{pref_code}_{pref_name}"))
+
+    found_target_dir = None
+    for d in target_dirs:
+        if os.path.exists(d):
+            found_target_dir = d
+            break
+
+    if not found_target_dir:
+        raise HTTPException(status_code=404, detail="成果物ディレクトリが見つかりません")
+
+    target_file = os.path.join(found_target_dir, "spatial_layers_by_zukaku", filename)
+    if not os.path.exists(target_file):
+        raise HTTPException(status_code=404, detail=f"指定されたファイルが見つかりません: {filename}")
+
+    media_type = "image/tiff" if filename.endswith(".tif") else "application/octet-stream"
+    return FileResponse(target_file, media_type=media_type, filename=filename)
+
+
 @app.get("/api/boundary-polygon/{pref_code}")
 async def get_boundary_polygon(pref_code: str, city_name: Optional[str] = Query(None)):
-    """
-    指定自治体・都道府県の境界 GeoJSON (EPSG:4326) を取得 (選択時ズームイン用)
-    """
-    from app.core.boundary import fetch_boundary_geojson
     try:
         c_name = city_name if (city_name and city_name != "ALL") else None
         gdf = fetch_boundary_geojson(pref_code, c_name)
@@ -228,27 +299,6 @@ async def get_boundary_polygon(pref_code: str, city_name: Optional[str] = Query(
         raise HTTPException(status_code=404, detail="境界 GeoJSON を取得できませんでした")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/api/live-zukaku/{pref_code}")
-async def get_live_zukaku(pref_code: str, city_name: Optional[str] = Query(None)):
-    """
-    処理中・処理済みの 1/2,500 図郭メッシュ GeoJSON をリアルタイム取得
-    """
-    pref_info = get_pref_info(pref_code)
-    if not pref_info:
-        raise HTTPException(status_code=404, detail="都道府県が見つかりません")
-
-    pref_name = pref_info["name"]
-    target_label_id = f"{pref_code}_{pref_name}_{city_name}" if (city_name and city_name != "ALL") else f"{pref_code}_{pref_name}"
-    target_dir = os.path.join(OUTPUT_BASE_DIR, f"output_{target_label_id}")
-
-    zukaku_json_path = os.path.join(target_dir, f"{target_label_id}_zukaku_2500.geojson")
-    if os.path.exists(zukaku_json_path):
-        with open(zukaku_json_path, "r", encoding="utf-8") as f:
-            raw = f.read()
-        return Response(content=raw, media_type="application/json")
-
-    raise HTTPException(status_code=404, detail="ライブ図郭メッシュがまだ生成されていません")
 
 @app.get("/api/preview/{pref_code}")
 async def preview_boundary(pref_code: str, city_name: Optional[str] = Query(None)):
@@ -266,15 +316,12 @@ async def preview_boundary(pref_code: str, city_name: Optional[str] = Query(None
 
     master_path = None
     for d in target_dirs:
-        for folder_name in ["spatial_layers_by_zukaku", "geojson_by_zukaku", "gpkg_by_zukaku"]:
-            s_d = os.path.join(d, folder_name)
-            if os.path.exists(s_d):
-                for fn in os.listdir(s_d):
-                    if fn.startswith("zukaku_2500_master_") or fn.endswith("boundary_all.geojson") or fn.endswith("boundary_master.geojson") or fn.endswith("boundary_all.gpkg"):
-                        master_path = os.path.join(s_d, fn)
-                        break
-            if master_path:
-                break
+        s_d = os.path.join(d, "spatial_layers_by_zukaku")
+        if os.path.exists(s_d):
+            for fn in os.listdir(s_d):
+                if fn.startswith("zukaku_2500_master_") or fn.startswith("city_boundary_"):
+                    master_path = os.path.join(s_d, fn)
+                    break
         if master_path:
             break
 
@@ -282,28 +329,8 @@ async def preview_boundary(pref_code: str, city_name: Optional[str] = Query(None
         raise HTTPException(status_code=404, detail="プレビュー用データが存在しません")
 
     try:
-        if master_path.endswith(".geojson"):
-            with open(master_path, "r", encoding="utf-8") as f:
-                raw_json_str = f.read()
-            return Response(content=raw_json_str, media_type="application/json")
-        else:
-            gdf = gpd.read_file(master_path, engine="pyogrio").to_crs(epsg=4326)
-            features = []
-            for idx, row in gdf.iterrows():
-                props = {}
-                for col in row.index:
-                    if col != "geometry":
-                        val = row[col]
-                        if isinstance(val, (float, np.floating)) and np.isnan(val):
-                            props[col] = None
-                        else:
-                            props[col] = val
-                features.append({
-                    "type": "Feature",
-                    "geometry": row.geometry.__geo_interface__,
-                    "properties": props
-                })
-            geojson_data = {"type": "FeatureCollection", "features": features}
-            return JSONResponse(content=geojson_data)
+        with open(master_path, "r", encoding="utf-8") as f:
+            raw_json_str = f.read()
+        return Response(content=raw_json_str, media_type="application/json")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

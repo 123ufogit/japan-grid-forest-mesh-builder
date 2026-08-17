@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全国公共測量図郭 & 森林資源メッシュ全自動構築ツール</title>
+    <title>全国公共測量図郭 & 国土地理院DEM・傾斜分布図構築ツール</title>
     <!-- Leaflet.js CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="/static/style.css" />
@@ -17,10 +17,10 @@
         <aside class="sidebar">
             <header class="app-header">
                 <div class="brand">
-                    <span class="logo-icon">🌲</span>
+                    <span class="logo-icon">⛰️</span>
                     <div>
-                        <h1>全国公共測量図郭 & 森林資源メッシュ構築</h1>
-                        <p class="subtitle">全47都道府県対応 1/2,500図郭 (.geojson) & 20mメッシュ (.gpkg)</p>
+                        <h1>全国公共測量図郭 & DEM・傾斜分布図構築</h1>
+                        <p class="subtitle">1/2,500図郭 (.geojson) & 国土地理院DEM・傾斜 GeoTIFF</p>
                     </div>
                 </div>
                 <div class="status-wrapper">
@@ -30,7 +30,7 @@
 
             <!-- Control Card -->
             <div class="panel-section">
-                <h2>1. 対象自治体の選択</h2>
+                <h2>1. 対象自治体 & DEMオプションの選択</h2>
                 <div class="form-row">
                     <div class="form-group flex-1">
                         <label for="pref-select">都道府県</label>
@@ -51,6 +51,83 @@
                     <span id="info-target-area" class="info-area">全国マップ表示中</span>
                     <span id="info-system" class="info-tag">第-系</span>
                     <span id="info-epsg" class="info-tag">EPSG:-</span>
+                </div>
+
+                <!-- DEM Options -->
+                <div class="dem-options-group">
+                    <label class="options-label">DEM解像度の選択</label>
+                    <div class="btn-group-toggle">
+                        <button type="button" id="btn-res-5m" class="btn-res active" data-res="5m">
+                            <span>📐 5m メッシュ</span>
+                        </button>
+                        <button type="button" id="btn-res-10m" class="btn-res" data-res="10m">
+                            <span>📐 10m メッシュ</span>
+                        </button>
+                    </div>
+                    <span id="dem-avail-status" class="avail-status-msg">自治体を選択すると整備状況を確認します</span>
+                </div>
+
+                <!-- GIS Analysis Options Grid -->
+                <div class="analysis-options-group">
+                    <label class="options-label">GIS空間解析レイヤーの選択</label>
+                    <div class="analysis-grid">
+                        <div class="analysis-item">
+                            <label class="switch-label">
+                                <input type="checkbox" id="chk-slope" checked>
+                                <span class="slider round"></span>
+                                <span class="switch-text">📐 傾斜角 (Slope)</span>
+                            </label>
+                            <button type="button" class="help-btn" data-tech="slope" title="解説を見る">❓</button>
+                        </div>
+                        <div class="analysis-item">
+                            <label class="switch-label">
+                                <input type="checkbox" id="chk-aspect">
+                                <span class="slider round"></span>
+                                <span class="switch-text">🧭 斜面方位 (Aspect)</span>
+                            </label>
+                            <button type="button" class="help-btn" data-tech="aspect" title="解説を見る">❓</button>
+                        </div>
+                        <div class="analysis-item">
+                            <label class="switch-label">
+                                <input type="checkbox" id="chk-hillshade">
+                                <span class="slider round"></span>
+                                <span class="switch-text">☀️ 陰影起伏 (Hillshade)</span>
+                            </label>
+                            <button type="button" class="help-btn" data-tech="hillshade" title="解説を見る">❓</button>
+                        </div>
+                        <div class="analysis-item">
+                            <label class="switch-label">
+                                <input type="checkbox" id="chk-curvature">
+                                <span class="slider round"></span>
+                                <span class="switch-text">〰️ 地形曲率 (Curvature)</span>
+                            </label>
+                            <button type="button" class="help-btn" data-tech="curvature" title="解説を見る">❓</button>
+                        </div>
+                        <div class="analysis-item">
+                            <label class="switch-label">
+                                <input type="checkbox" id="chk-csmap" checked>
+                                <span class="slider round"></span>
+                                <span class="switch-text">🗺️ CS立体図 (CS Map)</span>
+                            </label>
+                            <button type="button" class="help-btn" data-tech="csmap" title="解説を見る">❓</button>
+                        </div>
+                        <div class="analysis-item">
+                            <label class="switch-label">
+                                <input type="checkbox" id="chk-twi">
+                                <span class="slider round"></span>
+                                <span class="switch-text">💧 湿潤指数 (TWI)</span>
+                            </label>
+                            <button type="button" class="help-btn" data-tech="twi" title="解説を見る">❓</button>
+                        </div>
+                        <div class="analysis-item">
+                            <label class="switch-label">
+                                <input type="checkbox" id="chk-viewshed">
+                                <span class="slider round"></span>
+                                <span class="switch-text">👁️ 可視領域 (Viewshed)</span>
+                            </label>
+                            <button type="button" class="help-btn" data-tech="viewshed" title="解説を見る">❓</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="action-buttons">
@@ -78,8 +155,8 @@
                 <!-- Steps -->
                 <div class="pipeline-steps-mini">
                     <div id="step-1" class="mini-step"><span class="step-num">1</span>図郭抽出</div>
-                    <div id="step-2" class="mini-step"><span class="step-num">2</span>メッシュDL</div>
-                    <div id="step-3" class="mini-step"><span class="step-num">3</span>空間集計</div>
+                    <div id="step-2" class="mini-step"><span class="step-num">2</span>DEM取得</div>
+                    <div id="step-3" class="mini-step"><span class="step-num">3</span>多角解析</div>
                     <div id="step-4" class="mini-step"><span class="step-num">4</span>ZIP出力</div>
                 </div>
 
@@ -93,23 +170,23 @@
 
             <!-- Result Stats Section -->
             <div id="result-card" class="panel-section result-section">
-                <h2>3. 集計結果 & 成果物</h2>
+                <h2>3. 解析結果 & 成果物</h2>
                 <div class="stats-mini-grid">
                     <div class="stat-mini">
                         <span class="stat-lbl">対象図郭</span>
                         <span id="stat-zukaku" class="stat-val">-</span>
                     </div>
                     <div class="stat-mini">
-                        <span class="stat-lbl">20mメッシュ</span>
-                        <span id="stat-mesh" class="stat-val">-</span>
+                        <span class="stat-lbl">解像度</span>
+                        <span id="stat-resolution" class="stat-val">-</span>
                     </div>
                     <div class="stat-mini">
-                        <span class="stat-lbl">森林面積</span>
-                        <span id="stat-forest-ha" class="stat-val">-</span>
+                        <span class="stat-lbl">標高範囲</span>
+                        <span id="stat-elevation-range" class="stat-val">-</span>
                     </div>
                     <div class="stat-mini">
-                        <span class="stat-lbl">人工林率</span>
-                        <span id="stat-人工林率" class="stat-val">-</span>
+                        <span class="stat-lbl">平均標高</span>
+                        <span id="stat-mean-elevation" class="stat-val">-</span>
                     </div>
                 </div>
 
@@ -118,7 +195,14 @@
                         <span>📦</span> 成果物パック (.zip) ダウンロード
                     </a>
                 </div>
+
+                <!-- Generated GeoTIFF Layers List -->
+                <div id="generated-layers-container" style="display: none; margin-top: 6px;">
+                    <span class="options-label">✨ パック同梱の生成済 GeoTIFF レイヤー:</span>
+                    <div id="generated-layers-list" class="generated-layers-list"></div>
+                </div>
             </div>
+
         </aside>
 
         <!-- Main Interactive Map Section -->
@@ -131,8 +215,40 @@
         </main>
     </div>
 
+    <!-- Help Popup Modal -->
+    <div id="help-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <header class="modal-header">
+                <div class="modal-title-group">
+                    <span id="modal-icon" class="modal-icon">💡</span>
+                    <h3 id="modal-title">解析手法の解説</h3>
+                </div>
+                <button type="button" id="modal-close-btn" class="modal-close">&times;</button>
+            </header>
+            <div class="modal-body">
+                <div class="modal-badge-row">
+                    <span id="modal-category" class="modal-badge">分野</span>
+                    <span id="modal-output" class="modal-badge outline">出力形式</span>
+                </div>
+                <div class="modal-section">
+                    <h4>📘 技術的概要</h4>
+                    <p id="modal-description">-</p>
+                </div>
+                <div class="modal-section">
+                    <h4>🔢 数理・アルゴリズム</h4>
+                    <p id="modal-formula" class="code-block">-</p>
+                </div>
+                <div class="modal-section">
+                    <h4>🌿 主な活用用途・実務応用</h4>
+                    <ul id="modal-applications" class="use-cases-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Leaflet.js -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="/static/app.js"></script>
 </body>
 </html>
+
